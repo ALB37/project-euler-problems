@@ -1,0 +1,26 @@
+{
+  "name": "project-euler-problems",
+  "version": "1.0.0",
+  "description": "This is a repo with my solutions to problems on Project Euler",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest -i --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ALB37/project-euler-problems.git"
+  },
+  "keywords": [
+    "math",
+    "critical-thinking"
+  ],
+  "author": "Andrew Bloom",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ALB37/project-euler-problems/issues"
+  },
+  "homepage": "https://github.com/ALB37/project-euler-problems#readme",
+  "dependencies": {
+    "eslint": "^4.17.0"
+  }
+}
