@@ -11,6 +11,6 @@ const sumOfMultiplesOfThreeAndFive = largestNumber => {
     }
   }
   return answer;
-}
+};
 
 console.log(sumOfMultiplesOfThreeAndFive(1000));
