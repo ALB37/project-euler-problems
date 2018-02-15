@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/ALB37/project-euler-problems#readme",
   "dependencies": {
+    "big-integer": "^1.6.26",
     "eslint": "^4.17.0"
   }
 }
