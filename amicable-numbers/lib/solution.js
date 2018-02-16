@@ -7,7 +7,7 @@
 
 // Evaluate the sum of all the amicable numbers under 10000.
 
-const listFactors = number => {
+const listProperFactors = number => {
   const step = number % 2 === 0 ? 1 : 2;
   const factorSet = new Set();
   for (let value = 1; value < Math.floor(Math.sqrt(number)) + 1; value += step) {
@@ -16,6 +16,7 @@ const listFactors = number => {
       factorSet.add(number / value);
     }
   }
+  factorSet.delete(number);
   return factorSet;
 };
 
@@ -25,13 +26,11 @@ const generateAmicableNumbers = largestNumber => {
     if (amicableSet.has(value)){
       continue;
     }
-    const primaryFactors = listFactors(value);
-    primaryFactors.delete(value);
+    const primaryFactors = listProperFactors(value);
     let primarySum = 0;
     primaryFactors.forEach(val => primarySum += val);
     
-    const secondaryFactors = listFactors(primarySum);
-    secondaryFactors.delete(primarySum);
+    const secondaryFactors = listProperFactors(primarySum);
     let secondarySum = 0;
     secondaryFactors.forEach(val => secondarySum += val);
     
