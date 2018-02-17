@@ -36,10 +36,6 @@ const generatePrimesArray = largestPrime => {
   return primeArray;
 };
 
-const positiveBValues = generatePrimesArray(1000);
-const negativeBValues = positiveBValues.map(e => e * -1);
-const possibleBValues = negativeBValues.concat(positiveBValues);
-
 const evaluatePrimesLength = (a, b) => {
   let n = 0;
   let result = 2;
@@ -50,11 +46,14 @@ const evaluatePrimesLength = (a, b) => {
   return n - 1;
 };
 
-const bruteForcePossibleValues = () => {
+const bruteForcePossibleValues = largestAbsValOfAAndB => {
+  const positiveBValues = generatePrimesArray(largestAbsValOfAAndB);
+  const negativeBValues = positiveBValues.map(e => e * -1);
+  const possibleBValues = negativeBValues.concat(positiveBValues);
   let aValue = 0;
   let bValue = 0;
   let largestN = 0;
-  for (let a = -999; a < 1000; a++){
+  for (let a = ((largestAbsValOfAAndB - 1) * -1); a < largestAbsValOfAAndB; a++){
     for (let b of possibleBValues){
       let currentN = evaluatePrimesLength(a, b);
       if (currentN > largestN){
@@ -67,4 +66,4 @@ const bruteForcePossibleValues = () => {
   return aValue * bValue;
 };
 
-console.log(bruteForcePossibleValues());
+console.log(bruteForcePossibleValues(1000));
