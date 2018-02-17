@@ -1,0 +1,70 @@
+'use strict';
+
+// Euler discovered the remarkable quadratic formula:
+
+// n^2 + n + 41
+// It turns out that the formula will produce 40 primes for the consecutive integer values 0≤n≤39. However, when n = 40, 40^2 + 40 + 41=40(40 + 1) + 41 is divisible by 41, and certainly when n = 41, 41^2 + 41 + 41 is clearly divisible by 41.
+
+// The incredible formula n^2−79n + 1601 was discovered, which produces 80 primes for the consecutive values 0≤n≤79. The product of the coefficients, −79 and 1601, is −126479.
+
+// Considering quadratics of the form:
+
+// n^2 + an + b, where | a |< 1000 and | b |≤1000
+
+// where | n | is the modulus / absolute value of n
+// e.g. | 11|=11 and |−4 |= 4
+// Find the product of the coefficients, a and b, for the quadratic expression that produces the maximum number of primes for consecutive values of n, starting with n = 0.
+
+const isPrime = number => {
+  for (let factor = 2; factor < number; factor++) {
+    if (number % factor === 0) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const generatePrimesArray = largestPrime => {
+  const primeArray = [];
+  let currentNumber = 2;
+  while (currentNumber < largestPrime) {
+    if (isPrime(currentNumber, primeArray)) {
+      primeArray.push(currentNumber);
+    }
+    currentNumber++;
+  }
+  return primeArray;
+};
+
+const positiveBValues = generatePrimesArray(1000);
+const negativeBValues = positiveBValues.map(e => e * -1);
+const possibleBValues = negativeBValues.concat(positiveBValues);
+
+const evaluatePrimesLength = (a, b) => {
+  let n = 0;
+  let result = 2;
+  while (isPrime(result)){
+    result = Math.abs((n * n) + (a * n) + b);
+    n++;
+  }
+  return n - 1;
+};
+
+const bruteForcePossibleValues = () => {
+  let aValue = 0;
+  let bValue = 0;
+  let largestN = 0;
+  for (let a = -999; a < 1000; a++){
+    for (let b of possibleBValues){
+      let currentN = evaluatePrimesLength(a, b);
+      if (currentN > largestN){
+        largestN = currentN;
+        aValue = a;
+        bValue = b;
+      }
+    }
+  }
+  return aValue * bValue;
+};
+
+console.log(bruteForcePossibleValues());
