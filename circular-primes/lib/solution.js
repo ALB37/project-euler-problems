@@ -15,7 +15,7 @@ const isPrime = (number, primeArray) => {
   return true;
 };
 
-const generatePrimesArray = largestPrime => { // eslint-disable-line
+const generatePrimesArray = largestPrime => {
   const primeArray = [];
   let currentNumber = 2;
   while (currentNumber < largestPrime) {
