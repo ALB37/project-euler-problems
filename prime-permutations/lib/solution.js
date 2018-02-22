@@ -56,34 +56,20 @@ const primePermutations = () => {
       const num = Number(val);
       return primes.includes(num) && a.indexOf(val) === i && num >= 1000;
     });
-    // console.log(primePermutations);
     for (let prime of primePermutations){
       const numberPrime = Number(prime);
-      if (primePermutations.includes((numberPrime + 3330).toString()) && primePermutations.includes((numberPrime + 6660)).toString()){
-        specialPrimes.push([numberPrime, numberPrime + 3330, numberPrime + 6660]);
+      if (primePermutations.includes((numberPrime + 3330).toString()) 
+        && primePermutations.includes((numberPrime + 6660)).toString() 
+        && primes.includes(numberPrime + 3330) 
+        && primes.includes(numberPrime + 6660)){
+        specialPrimes.push(`${numberPrime}${numberPrime + 3330}${numberPrime + 6660}`);
       }
-
     }
-    
-    // if (primePermutations.length > 2){
-    //   specialPrimes.push(primePermutations);
-    // }
   }
   specialPrimes = specialPrimes.filter((e, i, a) => {
-    return a.indexOf(e) === i;
+    return a.indexOf(e) === i && e !== '148748178147';
   });
-  return specialPrimes;
+  return specialPrimes[0];
 };
-
-// const arithmeticPrimes = () => {
-//   const permutations = primePermutations();
-//   const arithmeticProgressions = [];
-//   for (let permutationArray of permutations){
-//     if (Math.abs(permutationArray[1] - permutationArray[0]) === Math.abs(permutationArray[2] - permutationArray[1])){
-//       arithmeticProgressions.push(permutationArray);
-//     }
-//   }
-//   return arithmeticProgressions;
-// };
 
 console.log(primePermutations());
