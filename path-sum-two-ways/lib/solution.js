@@ -8,72 +8,51 @@ fsx.readFile(`${__dirname}/../assets/p081_matrix.txt`)
   .then(data => {
     const rows = data.toString().split('\n').filter(e => e !== '');
     const matrix = rows.map(row => row.split(','));
-    for (let row in matrix){
-      for (let column in matrix[row]){
+    const memo = new Map();
+    for (let row = 0; row < matrix.length; row++){
+      for (let column = 0; column < matrix[row].length; column++){
         matrix[row][column] = Number(matrix[row][column]);
+        memo.set(`r${row}c${column}`, null);
       }
     }
-    let accumulator = Number(matrix[0][0]);
-    let row = 0;
-    let column = 0;
-    let rightPath = null;
-    let downPath = null;
-    while (row !== matrix.length - 1 && column !== matrix.length - 1){
-      if (row === matrix.length - 2 && column === matrix.length - 2){
-        rightPath = matrix[row][column + 1];
-        downPath = matrix[row + 1][column];
-        if (rightPath < downPath) {
-          accumulator += matrix[row][column + 1];
-          column++;
+    const _helper = (row, column) => {
+      let rightPath, downPath;
+      if (row !== matrix.length - 1){
+        if (memo.get(`r${row + 1}c${column}`)){
+          rightPath = memo.get(`r${row + 1}c${column}`);
+          console.log(rightPath);
         } else {
-          accumulator += matrix[row + 1][column];
-          row++;
+          rightPath = _helper(row + 1, column);
         }
-        continue;
       }
-      if (row === matrix.length - 2){
-        rightPath = Math.min(matrix[row][column + 1] + matrix[row][column + 2], matrix[row][column + 1] + matrix[row + 1][column + 1]);
-        downPath = matrix[row + 1][column] + matrix[row + 1][column + 1];
-        if (rightPath < downPath) {
-          accumulator += matrix[row][column + 1];
-          column++;
+      if (column !== matrix.length - 1){
+        if (memo.get(`r${row}c${column + 1}`)) {
+          downPath = memo.get(`r${row}c${column + 1}`);
+          console.log(downPath);
         } else {
-          accumulator += matrix[row + 1][column];
-          row++;
+          downPath = _helper(row, column + 1);
         }
-        continue;
       }
-      if (column === matrix.length - 2){
-        rightPath = matrix[row][column + 1] + matrix[row][column + 2];
-        downPath = Math.min(matrix[row + 1][column] + matrix[row + 1][column + 1], matrix[row + 1][column] + matrix[row + 2][column]);
-        if (rightPath < downPath) {
-          accumulator += matrix[row][column + 1];
-          column++;
-        } else {
-          accumulator += matrix[row + 1][column];
-          row++;
-        }
-        continue;
+
+      if (!rightPath && !downPath) {
+        memo.set(`r${row}c${column}`, matrix[row][column]);
+        return matrix[row][column];
       }
-      if (row === matrix.length - 1){
-        accumulator += matrix[row][column + 1];
-        column++;
-        continue;
+      if (!rightPath) {
+        memo.set(`r${row}c${column}`, matrix[row][column] + downPath);
+        return matrix[row][column] + downPath;
       }
-      if (column === matrix.length - 1){
-        accumulator += matrix[row + 1][column];
-        row++;
-        continue;
+      if (!downPath) {
+        memo.set(`r${row}c${column}`, matrix[row][column] + rightPath);
+        return matrix[row][column] + rightPath;
       }
-      rightPath = Math.min(matrix[row][column + 1] + matrix[row][column + 2], matrix[row][column + 1] + matrix[row + 1][column + 1]);
-      downPath = Math.min(matrix[row + 1][column] + matrix[row + 1][column + 1], matrix[row + 1][column] + matrix[row + 2][column]);
-      if (rightPath < downPath){
-        accumulator += matrix[row][column + 1];
-        column++;
-      } else {
-        accumulator += matrix[row + 1][column];
-        row++;
+      if (rightPath < downPath) {
+        memo.set(`r${row}c${column}`, matrix[row][column] + rightPath);
+        return matrix[row][column] + rightPath;
       }
-    }
-    console.log(accumulator);
+      memo.set(`r${row}c${column}`, matrix[row][column] + downPath);
+      return matrix[row][column] + downPath;
+    };
+
+    console.log(_helper(0, 0));
   });
