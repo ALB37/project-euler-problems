@@ -9,6 +9,8 @@ const fsx = require('fs-extra');
 // The following approach works by looking at two columns at a time, and working backwards
 // to find the smallest cost of each path at each column to the next
 
+// This approach will work for any rectangular matrix
+
 fsx.readFile(`${__dirname}/../assets/p082_matrix.txt`)
 // fsx.readFile(`${__dirname}/../assets/test.txt`)
   .then(data => {
@@ -20,9 +22,9 @@ fsx.readFile(`${__dirname}/../assets/p082_matrix.txt`)
       }
     }
     const solutionArray = [];
-    for (let i = 0; i < matrix.length; i++){
+    for (let i = 0; i < matrix[0].length; i++){
       //initialize the solution array with the values of the last column
-      solutionArray[i] = matrix[i][matrix.length - 1];
+      solutionArray[i] = matrix[i][matrix[0].length - 1];
     }
     for (let i = matrix.length - 2; i >= 0; i--){
       // solutionArray[0] will be cost of going straight across the top of the matrix
