@@ -14,44 +14,54 @@
 
 // If one complete new layer is wrapped around the spiral above, a square spiral with side length 9 will be formed.If this process is continued, what is the side length of the square spiral for which the ratio of primes along both diagonals first falls below 10 %?
 
-const diagonalNumbers = squareSize => {
-  const maxNum = squareSize * squareSize;
-  let num = 1;
-  let index = 0;
-  let increment = 2;
-  let topRightNum = 0;
-  let topRightDenom = 0;
-  let topLeftNum = 0;
-  let topLeftDenom = 0;
-  let bottomLeftNum = 0;
-  let bottomLeftDenom = 0;
-  while (num <= maxNum) {
-    // num is the diagonal, number 
-    // index % 4 == 1 is top right diagonal
-    // index % 4 == 2 is top left diagonal
-    // index % 4 == 3 is bottom left diagonal
-    // index % 4 == 0 is bottom right diagonal
-    index++;
-    num += increment;
-    switch (index % 4) {
-      case 0: {
-        increment += 2;
-        break;
-      }
-      case 1: {
-        topRightDenom++;
-        break;
-      }
-      case 2: {
-        topLeftDenom++;
-        break;
-      }
-      case 3: {
-        bottomLeftDenom++;
-        break;
-      }
+const isPrime = (number, primeArray) => {
+  for (let primeNumber of primeArray) {
+    if (primeNumber > number / 2) break;
+    if (number % primeNumber === 0) {
+      return false;
     }
   }
+  return true;
 };
 
-console.log();
+const generatePrimesArray = (largestPrime = 0, primeArray = [2, 3]) => {
+  let currentNumber = primeArray[primeArray.length - 1] + 2;
+  while (currentNumber < largestPrime) {
+    if (isPrime(currentNumber, primeArray)) {
+      primeArray.push(currentNumber);
+    }
+    currentNumber += 2;
+  }
+  return primeArray;
+};
+
+let index = 0;
+let squareSize = 1;
+let number = 1;
+let incrementer = 0;
+let numberOfDiagonals = 1;
+let primesEncountered = 0;
+let primeArray = generatePrimesArray();
+
+while (squareSize < 50000) {
+  primeArray = generatePrimesArray(number + incrementer, primeArray);
+  if (index % 4 !== 0 && primeArray.includes(number)){
+    primesEncountered++;
+  }
+  
+  if (index % 4 === 0) {
+    incrementer += 2;
+    if (squareSize > 1 && primesEncountered / numberOfDiagonals < 0.1){
+      console.log('found it!', squareSize, primesEncountered, numberOfDiagonals, primesEncountered / numberOfDiagonals);
+      break;
+    } else {
+      console.log(number, squareSize, primesEncountered, numberOfDiagonals, primesEncountered / numberOfDiagonals);
+    }
+    squareSize += 2;
+  }
+  
+  number += incrementer;
+  
+  index++;
+  numberOfDiagonals++;
+}
