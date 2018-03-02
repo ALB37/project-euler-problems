@@ -14,35 +14,45 @@
 
 // If one complete new layer is wrapped around the spiral above, a square spiral with side length 9 will be formed.If this process is continued, what is the side length of the square spiral for which the ratio of primes along both diagonals first falls below 10 %?
 
-const primeSieve = require('./sieve-of-atkin');
+// The Sieve of Atkin requires too much memory for this application
+// and the AKS test is too slow.
 
-let index = 0;
-let squareSize = 1;
-let number = 1;
-let incrementer = 0;
-let numberOfDiagonals = 1;
-let primesEncountered = 0;
-let primeArray = primeSieve(75000000);
+// const primeSieve = require('./sieve-of-atkin');
+// const aksTest = require('./aks-primality-test');
+const bigInt = require('big-integer');
 
-while (squareSize < 50000) {
-  if (index % 4 !== 0 && primeArray[number]){
-    primesEncountered++;
+const findSquareSize = limit => {
+  let index = 0;
+  let squareSize = 1;
+  let number = 1;
+  let incrementer = 0;
+  let numberOfDiagonals = 1;
+  let primesEncountered = 0;
+  
+  while (squareSize < limit) {
+    // From what I understand, bigInt uses an implementation of the
+    // Miller-Rabin primality test. Miller-Rabin is probabalistic,
+    // however, the primes we are checking should be in the range
+    // where the numbers it generates are certain to be prime.
+    // Miller-Rabin is much faster than the AKS test, but it suffers
+    // from not being completely deterministic.
+    if (index % 4 !== 0 && bigInt(number).isPrime()){
+      primesEncountered++;
+    }
+    
+    if (index % 4 === 0) {
+      incrementer += 2;
+      if (squareSize > 1 && primesEncountered / numberOfDiagonals < 0.1){
+        return squareSize;
+      } 
+      squareSize += 2;
+    }
+    
+    number += incrementer;
+    
+    index++;
+    numberOfDiagonals++;
   }
-  
-  if (index % 4 === 0) {
-    incrementer += 2;
-    if (squareSize > 1 && primesEncountered / numberOfDiagonals < 0.1){
-      console.log('found it!', squareSize, primesEncountered, numberOfDiagonals, primesEncountered / numberOfDiagonals);
-      break;
-    } 
-    // else {
-    //   console.log(number, squareSize, primesEncountered, numberOfDiagonals, primesEncountered / numberOfDiagonals);
-    // }
-    squareSize += 2;
-  }
-  
-  number += incrementer;
-  
-  index++;
-  numberOfDiagonals++;
-}
+};
+
+console.log(findSquareSize(30000));
