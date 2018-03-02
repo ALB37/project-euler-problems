@@ -14,26 +14,7 @@
 
 // If one complete new layer is wrapped around the spiral above, a square spiral with side length 9 will be formed.If this process is continued, what is the side length of the square spiral for which the ratio of primes along both diagonals first falls below 10 %?
 
-const isPrime = (number, primeArray) => {
-  for (let primeNumber of primeArray) {
-    if (primeNumber > number / 2) break;
-    if (number % primeNumber === 0) {
-      return false;
-    }
-  }
-  return true;
-};
-
-const generatePrimesArray = (largestPrime = 0, primeArray = [2, 3]) => {
-  let currentNumber = primeArray[primeArray.length - 1] + 2;
-  while (currentNumber < largestPrime) {
-    if (isPrime(currentNumber, primeArray)) {
-      primeArray.push(currentNumber);
-    }
-    currentNumber += 2;
-  }
-  return primeArray;
-};
+const primeSieve = require('./sieve-of-atkin');
 
 let index = 0;
 let squareSize = 1;
@@ -41,11 +22,10 @@ let number = 1;
 let incrementer = 0;
 let numberOfDiagonals = 1;
 let primesEncountered = 0;
-let primeArray = generatePrimesArray();
+let primeArray = primeSieve(75000000);
 
 while (squareSize < 50000) {
-  primeArray = generatePrimesArray(number + incrementer, primeArray);
-  if (index % 4 !== 0 && primeArray.includes(number)){
+  if (index % 4 !== 0 && primeArray[number]){
     primesEncountered++;
   }
   
@@ -54,9 +34,10 @@ while (squareSize < 50000) {
     if (squareSize > 1 && primesEncountered / numberOfDiagonals < 0.1){
       console.log('found it!', squareSize, primesEncountered, numberOfDiagonals, primesEncountered / numberOfDiagonals);
       break;
-    } else {
-      console.log(number, squareSize, primesEncountered, numberOfDiagonals, primesEncountered / numberOfDiagonals);
-    }
+    } 
+    // else {
+    //   console.log(number, squareSize, primesEncountered, numberOfDiagonals, primesEncountered / numberOfDiagonals);
+    // }
     squareSize += 2;
   }
   
