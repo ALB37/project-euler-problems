@@ -120,16 +120,25 @@ class playerHand {
       this.straight = true;
 
     if (this.flush.has && this.straight && this.high === 14) this.flush.royal = true;
-    if (this.cardNumbers[4] === this.cardNumbers[3] === this.cardNumbers[2] === this.cardNumbers[1]
-      || this.cardNumbers[3] === this.cardNumbers[2] === this.cardNumbers[1] === this.cardNumbers[0]){
+
+    if ((this.cardNumbers[4] === this.cardNumbers[3]
+        && this.cardNumbers[3] === this.cardNumbers[2]
+        && this.cardNumbers[2] === this.cardNumbers[1])
+      || (this.cardNumbers[3] === this.cardNumbers[2]
+        && this.cardNumbers[2] === this.cardNumbers[1]
+        && this.cardNumbers[1] === this.cardNumbers[0])){
       this.four.has = true;
       console.log('four of a kind');
       this.four.value = this.cardNumbers[2];
       return;
     }
-    if (this.cardNumbers[4] === this.cardNumbers[3] === this.cardNumbers[2]
-      || this.cardNumbers[3] === this.cardNumbers[2] === this.cardNumbers[1]
-      || this.cardNumbers[2] === this.cardNumbers[1] === this.cardNumbers[0]) {
+
+    if ((this.cardNumbers[4] === this.cardNumbers[3]
+        && this.cardNumbers[3] === this.cardNumbers[2])
+      || (this.cardNumbers[3] === this.cardNumbers[2]
+        && this.cardNumbers[2] === this.cardNumbers[1])
+      || (this.cardNumbers[2] === this.cardNumbers[1]
+        && this.cardNumbers[1] === this.cardNumbers[0])) {
       this.three.has = true;
       console.log('three of a kind');
       this.three.value = this.cardNumbers[2];
@@ -216,6 +225,8 @@ fsx.readFile(`${__dirname}/../assets/p054_poker.txt`)
       const playerTwoHand = new playerHand(game.slice(5, 10));
       playerOneHand.scoreHand();
       playerTwoHand.scoreHand();
+      console.log(playerOneHand);
+      console.log(playerTwoHand);
       if (playerOneHand.score > playerTwoHand.score){
         playerOneWins++;
         console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
