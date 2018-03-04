@@ -4,51 +4,42 @@
 
 // Find the lowest sum for a set of five primes for which any two primes concatenate to produce another prime.
 
-const sieveOfAtkin = require('../../lib/sieve-of-atkin');
+const bigInt = require('big-integer');
 
 const findSmallestConcatPrimes = limit => {
-  const primeArray = sieveOfAtkin(limit);
   const foundPrimes = [];
-  for (let primeA in primeArray){
+  for (let primeA = 3; primeA < limit; primeA++){
     if (foundPrimes.length) break;
-    if (!primeArray[primeA]) continue;
-    for (let primeB in primeArray){
+    if (!bigInt(primeA).isPrime()) continue;
+    for (let primeB = 3; primeB < primeA; primeB++){
       if (foundPrimes.length) break;
-      if (!primeArray[primeB]) continue;
-      if (primeB > primeA) break;
+      if (!bigInt(primeB).isPrime()) continue;
 
       // combinations of primeA and primeB
       const primeAB = Number(`${primeA}${primeB}`);
       const primeBA = Number(`${primeB}${primeA}`);
-      if (primeAB > limit || primeBA > limit) break;
-      if (!primeArray[primeAB] || !primeArray[primeBA]) continue;
+      
+      if (!bigInt(primeAB).isPrime() || !bigInt(primeBA).isPrime()) continue;
 
-      for (let primeC in primeArray){
+      for (let primeC = 3; primeC < primeB; primeC++){
         if (foundPrimes.length) break;
-        if (!primeArray[primeC]) continue;
-        if (primeC > primeA) break;
+        if (!bigInt(primeC).isPrime()) continue;
 
         // combinations of primeC with primeA and primeB
         const primeAC = Number(`${primeA}${primeC}`);
         const primeCA = Number(`${primeC}${primeA}`);
         const primeBC = Number(`${primeB}${primeC}`);
         const primeCB = Number(`${primeC}${primeB}`);
-        if (primeAC > limit 
-            || primeCA > limit
-            || primeBC > limit
-            || primeCB > limit)
-          break;
 
-        if (!primeArray[primeAC] 
-              || !primeArray[primeCA]
-              || !primeArray[primeBC]
-              || !primeArray[primeCB]) 
+        if (!bigInt(primeAC).isPrime() 
+              || !bigInt(primeCA).isPrime()
+              || !bigInt(primeBC).isPrime()
+              || !bigInt(primeCB).isPrime()) 
           continue;
 
-        for (let primeD in primeArray){
+        for (let primeD = 3; primeD < primeC; primeD++){
           if (foundPrimes.length) break;
-          if (!primeArray[primeD]) continue;
-          if (primeD > primeA) break;
+          if (!bigInt(primeD).isPrime()) continue;
 
           // combinations of primeD with primeA, primeB and primeC
           const primeAD = Number(`${primeA}${primeD}`);
@@ -58,25 +49,16 @@ const findSmallestConcatPrimes = limit => {
           const primeCD = Number(`${primeC}${primeD}`);
           const primeDC = Number(`${primeD}${primeC}`);
 
-          if (primeAD > limit
-              || primeDA > limit
-              || primeBD > limit
-              || primeDB > limit
-              || primeCD > limit
-              || primeDC > limit)
-            break;
-
-          if (!primeArray[primeAD]
-                || !primeArray[primeDA]
-                || !primeArray[primeBD]
-                || !primeArray[primeDB]
-                || !primeArray[primeCD]
-                || !primeArray[primeDC])
+          if (!bigInt(primeAD).isPrime()
+                || !bigInt(primeDA).isPrime()
+                || !bigInt(primeBD).isPrime()
+                || !bigInt(primeDB).isPrime()
+                || !bigInt(primeCD).isPrime()
+                || !bigInt(primeDC).isPrime())
             continue;
 
-          for (let primeE in primeArray){
-            if (!primeArray[primeE]) continue;
-            if (primeE > primeA) break;
+          for (let primeE = 3; primeE < primeD; primeE++){
+            if (!bigInt(primeE).isPrime()) continue;
 
             //combinations of primeE with primeA, primeB, primeC and primeD
             const primeAE = Number(`${primeA}${primeE}`);
@@ -88,24 +70,14 @@ const findSmallestConcatPrimes = limit => {
             const primeDE = Number(`${primeD}${primeE}`);
             const primeED = Number(`${primeE}${primeD}`);
 
-            if (primeAE > limit
-                || primeEA > limit
-                || primeBE > limit
-                || primeEB > limit
-                || primeCE > limit
-                || primeEC > limit
-                || primeDE > limit
-                || primeED > limit)
-              break;
-
-            if (!primeArray[primeAE]
-                  || !primeArray[primeEA]
-                  || !primeArray[primeBE]
-                  || !primeArray[primeEB]
-                  || !primeArray[primeCE]
-                  || !primeArray[primeEC]
-                  || !primeArray[primeDE]
-                  || !primeArray[primeED])
+            if (!bigInt(primeAE).isPrime()
+                  || !bigInt(primeEA).isPrime()
+                  || !bigInt(primeBE).isPrime()
+                  || !bigInt(primeEB).isPrime()
+                  || !bigInt(primeCE).isPrime()
+                  || !bigInt(primeEC).isPrime()
+                  || !bigInt(primeDE).isPrime()
+                  || !bigInt(primeED).isPrime())
               continue;
               
             foundPrimes.push(
@@ -125,4 +97,4 @@ const findSmallestConcatPrimes = limit => {
   return foundPrimes.reduce((ac, v) => v + ac, 0);
 };
 
-console.log(findSmallestConcatPrimes(1000000));
+console.log(findSmallestConcatPrimes(Math.pow(10, 15)));
