@@ -106,17 +106,20 @@ class playerHand {
       let suit = cardInfo[1];
       return {number, suit};
     });
+
     this.cardNumbers = evaluatedCards.map(card => card.number).sort((a, b) => a - b);
-    console.log(this.cardNumbers);
+
     const cardSuits = evaluatedCards.map(card => card.suit)
       .filter((suit, i, a) => i === a.indexOf(suit));
     
     if (cardSuits.length === 1) this.flush.has = true;
+
     this.high = Math.max(...this.cardNumbers);
+
     if (this.cardNumbers[4] === this.cardNumbers[3] + 1
-      && this.cardNumbers[3] === this.cardNumbers[2] + 1
-      && this.cardNumbers[2] === this.cardNumbers[1] + 1
-      && this.cardNumbers[1] === this.cardNumbers[0] + 1)
+        && this.cardNumbers[3] === this.cardNumbers[2] + 1
+        && this.cardNumbers[2] === this.cardNumbers[1] + 1
+        && this.cardNumbers[1] === this.cardNumbers[0] + 1)
       this.straight = true;
 
     if (this.flush.has && this.straight && this.high === 14) this.flush.royal = true;
@@ -128,7 +131,6 @@ class playerHand {
         && this.cardNumbers[2] === this.cardNumbers[1]
         && this.cardNumbers[1] === this.cardNumbers[0])){
       this.four.has = true;
-      console.log('four of a kind');
       this.four.value = this.cardNumbers[2];
       return;
     }
@@ -140,7 +142,6 @@ class playerHand {
       || (this.cardNumbers[2] === this.cardNumbers[1]
         && this.cardNumbers[1] === this.cardNumbers[0])) {
       this.three.has = true;
-      console.log('three of a kind');
       this.three.value = this.cardNumbers[2];
     }
     if (this.three.has){
@@ -151,19 +152,20 @@ class playerHand {
       }
       return;
     }
+
     if (this.cardNumbers[4] === this.cardNumbers[3]
-      || this.cardNumbers[3] === this.cardNumbers[2]){
+        || this.cardNumbers[3] === this.cardNumbers[2]){
       this.pair.number = 1;
       this.pair.value.push(this.cardNumbers[3]);
     } else if (this.cardNumbers[2] === this.cardNumbers[1]
-      || this.cardNumbers[1] === this.cardNumbers[0]){
+              || this.cardNumbers[1] === this.cardNumbers[0]){
       this.pair.number = 1;
       this.pair.value.push(this.cardNumbers[1]);
     }
     if (this.pair.number === 1){
       this.cardNumbers = this.cardNumbers.filter(card => card !== this.pair.value[0]);
       if (this.cardNumbers[2] === this.cardNumbers[1]
-      || this.cardNumbers[1] === this.cardNumbers[0]){
+          || this.cardNumbers[1] === this.cardNumbers[0]){
         this.pair.number = 2;
         this.pair.value.push(this.cardNumbers[1]);
         this.pair.value.sort((a, b) => b - a);
@@ -225,173 +227,138 @@ fsx.readFile(`${__dirname}/../assets/p054_poker.txt`)
       const playerTwoHand = new playerHand(game.slice(5, 10));
       playerOneHand.scoreHand();
       playerTwoHand.scoreHand();
-      console.log(playerOneHand);
-      console.log(playerTwoHand);
       if (playerOneHand.score > playerTwoHand.score){
         playerOneWins++;
-        console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
         continue;
       }
-      if (playerTwoHand.score > playerOneHand.score){
+      if (playerOneHand.score < playerTwoHand.score){
         playerTwoWins++;
-        console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
         continue;
       }
-      console.log('players scores are equal\n');
       switch (playerOneHand.score){
         case 8:
           if (playerOneHand.high > playerTwoHand.high){
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           } else {
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           }
           break;
         case 7:
           if (playerOneHand.four.value > playerTwoHand.four.value){
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           } else {
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           }
           break;
         case 6:
           if (playerOneHand.three.value > playerTwoHand.three.value){
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           } else if (playerOneHand.three.value === playerTwoHand.three.value){
             if (playerOneHand.pair.value[0] > playerTwoHand.pair.value[0]) {
               playerOneWins++;
-              console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
             } else {
               playerTwoWins++;
-              console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
             }
           } else {
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           }
           break;
         case 5:
           if (playerOneHand.high > playerTwoHand.high){
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
             break;
-          } else if (playerTwoHand.high > playerOneHand.high){
+          } else if (playerOneHand.high < playerTwoHand.high){
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
             break;
           }
           while (playerOneHand.cardNumbers.length
-            && playerOneHand.cardNumbers[playerOneHand.cardNumbers.length]
-            === playerTwoHand.cardNumbers[playerTwoHand.cardNumbers.length]){
+                 && playerOneHand.cardNumbers[playerOneHand.cardNumbers.length]
+                    === playerTwoHand.cardNumbers[playerTwoHand.cardNumbers.length]){
             playerOneHand.cardNumbers.pop();
             playerTwoHand.cardNumbers.pop();
           }
           if (playerOneHand.cardNumbers[playerOneHand.cardNumbers.length]
-            > playerTwoHand.cardNumbers[playerTwoHand.cardNumbers.length]){
+              > playerTwoHand.cardNumbers[playerTwoHand.cardNumbers.length]){
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           } else {
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           }
           break;
         case 4:
           if (playerOneHand.high > playerTwoHand.high){
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           } else {
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           }
           break;
         case 3:
           if (playerOneHand.three.value > playerTwoHand.three.value){
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           } else {
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           }
           break;
         case 2:
           if (playerOneHand.pair.value[1] > playerTwoHand.pair.value[1]){
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
             break;
           } else if (playerOneHand.pair.value[1] < playerTwoHand.pair.value[1]){
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
             break;
           } 
           if (playerOneHand.pair.value[0] > playerTwoHand.pair.value[0]) {
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
             break;
           } else if (playerOneHand.pair.value[0] < playerTwoHand.pair.value[0]) {
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
             break;
           } 
           if (playerOneHand.high > playerTwoHand.high){
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           } else {
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           }
           break;
         case 1:
           if (playerOneHand.pair.value[0] > playerTwoHand.pair.value[0]) {
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
             break;
           } else if (playerOneHand.pair.value[0] < playerTwoHand.pair.value[0]) {
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
             break;
           } 
           while (playerOneHand.cardNumbers.length
-            && playerOneHand.cardNumbers[playerOneHand.cardNumbers.length]
-            === playerTwoHand.cardNumbers[playerTwoHand.cardNumbers.length]) {
+                 && playerOneHand.cardNumbers[playerOneHand.cardNumbers.length]
+                    === playerTwoHand.cardNumbers[playerTwoHand.cardNumbers.length]) {
             playerOneHand.cardNumbers.pop();
             playerTwoHand.cardNumbers.pop();
           }
           if (playerOneHand.cardNumbers[playerOneHand.cardNumbers.length]
-            > playerTwoHand.cardNumbers[playerTwoHand.cardNumbers.length]) {
+              > playerTwoHand.cardNumbers[playerTwoHand.cardNumbers.length]) {
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           } else {
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           }
           break;
         case 0:
           if (playerOneHand.high > playerTwoHand.high) {
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
             break;
           } else if (playerOneHand.high < playerTwoHand.high) {
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
             break;
           } 
           while (playerOneHand.cardNumbers.length 
-            && playerOneHand.cardNumbers[playerOneHand.cardNumbers.length]
-            === playerTwoHand.cardNumbers[playerTwoHand.cardNumbers.length]) {
+                 && playerOneHand.cardNumbers[playerOneHand.cardNumbers.length]
+                    === playerTwoHand.cardNumbers[playerTwoHand.cardNumbers.length]) {
             playerOneHand.cardNumbers.pop();
             playerTwoHand.cardNumbers.pop();
           }
           if (playerOneHand.cardNumbers[playerOneHand.cardNumbers.length]
-            > playerTwoHand.cardNumbers[playerTwoHand.cardNumbers.length]) {
+              > playerTwoHand.cardNumbers[playerTwoHand.cardNumbers.length]) {
             playerOneWins++;
-            console.log('player one won', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           } else {
             playerTwoWins++;
-            console.log('player one lost', playerOneHand.score, playerOneHand.cards, playerTwoHand.score, playerTwoHand.cards);
           }
           break;
       }
