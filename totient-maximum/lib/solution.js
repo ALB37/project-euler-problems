@@ -16,7 +16,7 @@
 
 // Find the value of n ≤ 1,000,000 for which n / φ(n) is a maximum.
 
-// const bigInt = require('big-integer');
+const bigInt = require('big-integer');
 const sieve = require('../../lib/sieve-of-atkin');
 
 // const generatePrimes = limit => {
@@ -32,16 +32,16 @@ const sieve = require('../../lib/sieve-of-atkin');
 // };
 
 const totientFunction = (number, primeArray) => {
-  if (primeArray[number]){
+  if (bigInt(number).isPrime()){
     return number - 1;
   }
 
   const primeFactors = [];
 
-  for (let prime in primeArray){
-    if (!primeArray[prime]) continue;
-    if (Number(prime) > number) break;
-    if (number % Number(prime) === 0){
+  for (let prime of primeArray){
+    // if (!primeArray[prime]) continue;
+    if (prime > number) break;
+    if (number % prime === 0){
       primeFactors.push(prime);
     }
   }
@@ -56,18 +56,21 @@ const totientFunction = (number, primeArray) => {
 };
 
 const maxNdivPhiN = limit => {
-  const primeArray = sieve(limit);
+  let primeArray = sieve(limit);
+  primeArray = primeArray
+    .map((v, i) => v === 1 ? Number(i) : 0)
+    .filter(v => v !== 0);
   let maxN = null;
   let max = 0;
   let number = 2;
 
   while (number <= limit) {
-    // console.log(number);
+    console.log(number);
     const phiN = totientFunction(number, primeArray);
     if (number / phiN > max){
       max = number / phiN;
       maxN = number;
-      // console.log(maxN, phiN);
+      console.log(maxN, phiN);
     }
     number++;
   }
