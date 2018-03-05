@@ -17,64 +17,91 @@
 // Find the value of n ≤ 1,000,000 for which n / φ(n) is a maximum.
 
 const bigInt = require('big-integer');
-const sieve = require('../../lib/sieve-of-atkin');
+// const sieve = require('../../lib/sieve-of-atkin');
 
-// const generatePrimes = limit => {
-//   let number = 1;
-//   const primeArray = [];
-//   while (number <= limit){
-//     if (bigInt(number).isPrime()){
-//       primeArray.push(number);
+// const totientFunction = (number, primeArray) => {
+//   if (bigInt(number).isPrime()){
+//     return number - 1;
+//   }
+
+//   const primeFactors = [];
+
+//   for (let prime of primeArray){
+//     if (prime > number) break;
+//     if (number % prime === 0){
+//       primeFactors.push(prime);
+//     }
+//   }
+
+//   const totientFactors = [number];
+
+//   for (let prime of primeFactors){
+//     totientFactors.push((1 - (1 / prime)));
+//   }
+
+//   return totientFactors.reduce((ac, v) => v * ac, 1);
+// };
+
+// const numUniquePrimeFactors = (number, primeArray) => {
+//   if (bigInt(number).isPrime()) {
+//     return 1;
+//   }
+//   const primeFactors = [];
+//   for (let prime of primeArray){
+//     if (prime > number) break;
+//     if (number % prime === 0) {
+//       primeFactors.push(prime);
+//     }
+//   }
+
+//   return primeFactors.length;
+// };
+
+// const maxNdivPhiN = limit => {
+//   let primeArray = sieve(limit);
+//   primeArray = primeArray
+//     .map((v, i) => v === 1 ? Number(i) : 0)
+//     .filter(v => v !== 0);
+//   let maxN = null;
+//   let maxFactors = null;
+//   // let max = 0;
+//   let number = 2;
+
+//   while (number <= limit) {
+//     // console.log(number);
+//     // const phiN = totientFunction(number, primeArray);
+//     // const numOfPrimeFactors = numUniquePrimeFactors(number, primeArray);
+//     // if (number / phiN > max){
+//     //   max = number / phiN;
+//     //   maxN = number;
+//     //   console.log(maxN, phiN);
+//     // }
+//     if (numOfPrimeFactors > maxFactors){
+//       maxN = number;
+//       maxFactors = numOfPrimeFactors;
+//       console.log(maxN, maxFactors);
 //     }
 //     number++;
 //   }
-//   return primeArray;
+//   return maxN;
 // };
 
-const totientFunction = (number, primeArray) => {
-  if (bigInt(number).isPrime()){
-    return number - 1;
-  }
+// console.log(maxNdivPhiN(1000000));
 
-  const primeFactors = [];
-
-  for (let prime of primeArray){
-    // if (!primeArray[prime]) continue;
-    if (prime > number) break;
-    if (number % prime === 0){
-      primeFactors.push(prime);
-    }
-  }
-
-  const totientFactors = [number];
-
-  for (let prime of primeFactors){
-    totientFactors.push((1 - (1 / prime)));
-  }
-
-  return totientFactors.reduce((ac, v) => v * ac, 1);
-};
-
-const maxNdivPhiN = limit => {
-  let primeArray = sieve(limit);
-  primeArray = primeArray
-    .map((v, i) => v === 1 ? Number(i) : 0)
-    .filter(v => v !== 0);
-  let maxN = null;
-  let max = 0;
+const findTotientMaximum = limit => {
+  let accumulator = 1;
   let number = 2;
-
-  while (number <= limit) {
-    console.log(number);
-    const phiN = totientFunction(number, primeArray);
-    if (number / phiN > max){
-      max = number / phiN;
-      maxN = number;
-      console.log(maxN, phiN);
+  let temp = accumulator;
+  while (temp < limit){
+    if (bigInt(number).isPrime()){
+      temp = accumulator * number;
+      if (temp < limit){
+        accumulator = temp;
+      }
     }
     number++;
   }
-  return maxN;
+  return accumulator;
 };
 
-console.log(maxNdivPhiN(1000000));
+console.log(findTotientMaximum(1000000));
