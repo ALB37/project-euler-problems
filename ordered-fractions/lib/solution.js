@@ -10,19 +10,26 @@
 
 // By listing the set of reduced proper fractions for d ≤ 1, 000, 000 in ascending order of size, find the numerator of the fraction immediately to the left of 3 / 7.
 
-const lowerBound = 3 / 7;
-let numerator = Math.floor(lowerBound * 1000000);
-const upperBound = numerator / 1000000;
-let denominator = 999999;
-let fraction = numerator / denominator;
-
-while (!(fraction < upperBound) && !(fraction > lowerBound)){
-  if (fraction >= upperBound)
-    denominator--;
-  if (fraction < lowerBound)
-    numerator--;
+const leftOfThreeSevenths = denomLimit => {
+  const upperBound = 3 / 7;
+  let numerator = Math.floor(upperBound * denomLimit);
+  const lowerBound = numerator / denomLimit;
+  let denominator = denomLimit - 1;
+  let fraction = numerator / denominator;
   
-  fraction = numerator / denominator;
-}
+  while ((fraction >= upperBound) || (fraction < lowerBound)){
+    if (fraction >= upperBound){
+      numerator--;
+    }
+    
+    if (fraction < lowerBound){
+      denominator--;
+    }
+    
+    fraction = numerator / denominator;
+  }
+  
+  return {numerator, denominator};
+};
 
-console.log(numerator);
+console.log(leftOfThreeSevenths(1000000).numerator);
