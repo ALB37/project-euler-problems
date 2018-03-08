@@ -10,35 +10,19 @@
 
 // By listing the set of reduced proper fractions for d ≤ 1, 000, 000 in ascending order of size, find the numerator of the fraction immediately to the left of 3 / 7.
 
+const lowerBound = 3 / 7;
+let numerator = Math.floor(lowerBound * 1000000);
+const upperBound = numerator / 1000000;
+let denominator = 999999;
+let fraction = numerator / denominator;
 
+while (!(fraction < upperBound) && !(fraction > lowerBound)){
+  if (fraction >= upperBound)
+    denominator--;
+  if (fraction < lowerBound)
+    numerator--;
+  
+  fraction = numerator / denominator;
+}
 
-const generateFractions = limit => {
-  let numerator = 1;
-  const fractionMap = new Map();
-  while (numerator < limit - 1){
-    for (let denominator = numerator + 1; denominator < limit; denominator++){
-      if (!fractionMap.has(numerator / denominator)){
-        fractionMap.set(
-          (numerator / denominator), 
-          {numerator, 
-            denominator, 
-            decimal: numerator / denominator,
-          }
-        );
-      }
-    }
-    numerator++;
-  }
-  let fractionArray = [];
-  for (let key of fractionMap){
-    fractionArray.push(key[1]);
-  }
-  fractionArray.sort((a, b) => a.decimal - b.decmial);
-  for (let i = 0; i < fractionArray.length; i++){
-    if (fractionArray[i].denominator === 7 && fractionArray[i].numerator === 7){
-      return fractionArray[i - 1].numerator;
-    }
-  }
-};
-
-console.log(generateFractions(1000000));
+console.log(numerator);
