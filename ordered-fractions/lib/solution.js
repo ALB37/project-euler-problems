@@ -18,14 +18,27 @@ const generateFractions = limit => {
   while (numerator < limit - 1){
     for (let denominator = numerator + 1; denominator < limit; denominator++){
       if (!fractionMap.has(numerator / denominator)){
-        fractionMap.set((numerator / denominator), {numerator, denominator});
+        fractionMap.set(
+          (numerator / denominator), 
+          {numerator, 
+            denominator, 
+            decimal: numerator / denominator,
+          }
+        );
       }
     }
     numerator++;
   }
+  let fractionArray = [];
   for (let key of fractionMap){
-    console.log(key);
+    fractionArray.push(key[1]);
+  }
+  fractionArray.sort((a, b) => a.decimal - b.decmial);
+  for (let i = 0; i < fractionArray.length; i++){
+    if (fractionArray[i].denominator === 7 && fractionArray[i].numerator === 7){
+      return fractionArray[i - 1].numerator;
+    }
   }
 };
 
-console.log(generateFractions(100));
+console.log(generateFractions(1000000));
