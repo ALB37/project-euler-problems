@@ -11,33 +11,28 @@
 
 // How many different ways can one hundred be written as a sum of at least two positive integers ?
 
-// start with 100 1s, combine 2, 3, 4 ... 99. At each step, start with that number and the remainder of 1s and start over.
-
 const sumCombinations = sum => {
-  const arrayOfOnes = [];
-  for (let num = 0; num < sum; num++){
-    arrayOfOnes.push(1);
+  // create a set of all the possible numbers we can use to sum to the number in question
+  // i.e. the set of all positive numbers up to but not including the number
+  const arrayOfPossibleNumbers = [];
+  for (let num = 1; num < sum; num++){
+    arrayOfPossibleNumbers.push(num);
   }
-  const uniqueCombinations = new Set();
-  const _helper = array => {
-    array.sort((a, b) => a - b);
-    if (uniqueCombinations.has(array.toString())){
-      return;
-    } else {
-      uniqueCombinations.add(array.toString());
+  // knowing there is 1 way to sum to 1, and we initialize all other numbers' combinations at 0
+  const combinations = [1];
+  for (let num = 0; num < sum; num++) {
+    combinations.push(0);
+  }
+  // here we calculate the number of combinations that sum to a given number
+  // based on the previous calculations made
+  for (let i = 0; i < arrayOfPossibleNumbers.length; i++){
+    for (let j = arrayOfPossibleNumbers[i]; j <= sum; j++){
+      combinations[j] += combinations[j - arrayOfPossibleNumbers[i]];
+      console.log(j, i, combinations[j]);
     }
-    if (array.length > 2){
-      const arrayCopy = [...array];
-      const valueToAdd = arrayCopy.shift();
-      for (let i = 0; i < arrayCopy.length; i++){
-        const innerArrayCopy = [...arrayCopy];
-        innerArrayCopy[i] += valueToAdd;
-        _helper(innerArrayCopy);
-      }
-    }
-  };
-  _helper(arrayOfOnes);
-  return uniqueCombinations;
+  }
+
+  return combinations[combinations.length - 1];
 };
 
-console.log(sumCombinations(100).size);
+console.log(sumCombinations(100));
