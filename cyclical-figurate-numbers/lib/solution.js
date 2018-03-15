@@ -89,6 +89,8 @@ const generateOctNum = limit => {
 
 
 const findCyclicSet = () => {
+  // generate arrays for each of the figurate number sets
+  // and filter so we only have 4 digit numbers
   const triArr = generateTriNum(10000).filter(e => e > 999);
   const sqrArr = generateSqrNum(10000).filter(e => e > 999);
   const pentArr = generatePentNum(10000).filter(e => e > 999);
@@ -96,28 +98,40 @@ const findCyclicSet = () => {
   const heptArr = generateHeptNum(10000).filter(e => e > 999);
   const octArr = generateOctNum(10000).filter(e => e > 999);
   const foundSolutions = new Set();
+  // the visited array will be our state;
+  // a placeholder for figurate number types that are already included
+  // in the foundNums arr
   const _helper = (num, visitedArr, foundNums) => {
+    // check if each figurate number type is accounted for
     if (visitedArr.filter(e => !e).length === 0) {
       foundSolutions.add(foundNums);
       return;
     }
     let rearDigits = num.toString().slice(2);
-    if (Number(rearDigits) < 10) return null;
-    for (let postFix = 10; postFix < 100; postFix++){
-      let testNum = Number(rearDigits + postFix);
+    // the following condition leads to 3 digit numbers
+    if (Number(rearDigits) < 10) return;
+    for (let suffix = 10; suffix < 100; suffix++){
+      // derive the beginning of the next number from
+      // the last digits of the current number
+      let testNum = Number(rearDigits + suffix);
       if (foundNums.includes(testNum)) continue;
+      // next we will check the various paths where the suffix of
+      // the current number works as the prefix of another
+      // figurate number
       for (let i in visitedArr){
+        // if we already have a certain figurate number,
+        // we will not look at any more:
         if (visitedArr[i]) continue;
+        // unfortunately, for in gives us a string
+        // rather than a number:
         switch (Number(i)){
           case 0: {
             if (sqrArr.includes(testNum)){
               const continueArr = [...visitedArr];
               const moreFound = [...foundNums];
               moreFound.push(testNum);
-              continueArr[i] = 1;
-              // const continuation = 
+              continueArr[i] = 1; 
               _helper(testNum, continueArr, moreFound);
-              // if (continuation) return continuation;
             }
             break;
           }
@@ -126,10 +140,8 @@ const findCyclicSet = () => {
               const continueArr = [...visitedArr];
               const moreFound = [...foundNums];
               moreFound.push(testNum);
-              continueArr[i] = 1;
-              // const continuation = 
+              continueArr[i] = 1; 
               _helper(testNum, continueArr, moreFound);
-              // if (continuation) return continuation;
             }
             break;
           }
@@ -138,10 +150,8 @@ const findCyclicSet = () => {
               const continueArr = [...visitedArr];
               const moreFound = [...foundNums];
               moreFound.push(testNum);
-              continueArr[i] = 1;
-              // const continuation = 
+              continueArr[i] = 1; 
               _helper(testNum, continueArr, moreFound);
-              // if (continuation) return continuation;
             }
             break;
           }
@@ -150,10 +160,8 @@ const findCyclicSet = () => {
               const continueArr = [...visitedArr];
               const moreFound = [...foundNums];
               moreFound.push(testNum);
-              continueArr[i] = 1;
-              // const continuation = 
+              continueArr[i] = 1; 
               _helper(testNum, continueArr, moreFound);
-              // if (continuation) return continuation;
             }
             break;
           }
@@ -162,10 +170,8 @@ const findCyclicSet = () => {
               const continueArr = [...visitedArr];
               const moreFound = [...foundNums];
               moreFound.push(testNum);
-              continueArr[i] = 1;
-              // const continuation = 
+              continueArr[i] = 1; 
               _helper(testNum, continueArr, moreFound);
-              // if (continuation) return continuation;
             }
             break; 
           }
@@ -173,18 +179,24 @@ const findCyclicSet = () => {
         }
       }
     }
-    return null;
   };
+  // generate possible answers starting with all triangle numbers
   for (let num of triArr){
     _helper(num, [0, 0, 0, 0, 0], [num]);
   }
+  
   const uniqueNumberArrs = new Set();
   foundSolutions.forEach(arr => {
+    // This code removes duplicates from an array;
+    // This works because indexOf always returns the index
+    // of the first found element.
     const filteredArr = arr.filter((e, i, a) => a.indexOf(e) === i);
     if (filteredArr.length === 6){
       uniqueNumberArrs.add(filteredArr);
     }
   });
+  // the following is where we will narrow down the potential solutions
+  // to the only solution which is cyclical
   let solution = null;
   uniqueNumberArrs.forEach(arr => {
     const firstHalves = [];
@@ -194,23 +206,23 @@ const findCyclicSet = () => {
       lastHalves.push(val.toString().slice(2));
     }
     let foundArr = true;
-    for (let sub of firstHalves){
-      if (!lastHalves.includes(sub)){
+    for (let half of firstHalves){
+      if (!lastHalves.includes(half)){
         foundArr = false;
         break;
       }
     }
-    for (let sub of lastHalves){
-      if (!firstHalves.includes(sub)) {
+    for (let half of lastHalves){
+      if (!foundArr) break;
+      if (!firstHalves.includes(half)) {
         foundArr = false;
         break;
       }
     }
     if (foundArr){
       if (firstHalves.filter((e, i, a) => a.indexOf(e) === i).length === 6
-          && lastHalves.filter((e, i, a) => a.indexOf(e) === i).length === 6){
+          && lastHalves.filter((e, i, a) => a.indexOf(e) === i).length === 6)
         solution = arr;
-      }
     }
   });
   return solution;
