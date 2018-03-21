@@ -13,58 +13,61 @@
 const bigInt = require('big-integer');
 
 const primeGen = limit => {
-  const primeArr = [];
-  for (let num = 2; num <= limit; num++){
+  const primeMap = new Map();
+  for (let num = 1; num <= limit; num++) {
     if (bigInt(num).isPrime()) {
-      primeArr.push(num);
+      primeMap.set(num, true);
+    } else {
+      primeMap.set(num, false);
     }
   }
-  return primeArr;
+  return primeMap;
+};
+
+const primeFactors = (number, primeMap) => {
+  const factorSet = new Set();
+  if (primeMap.get(number)) {
+    factorSet.add(number);
+    return factorSet;
+  }
+  for (let [prime, bool] of primeMap) {
+    if (!bool) continue;
+    if (number % prime === 0) {
+      factorSet.add(prime);
+    }
+  }
+  return factorSet;
 };
 
 const numProperFractions = limit => {
-  const primeArr = primeGen(limit);
+  const primeMap = primeGen(limit);
+  const factorMap = new Map();
+  for (let number = 2; number <= limit; number++) {
+    factorMap.set(number, primeFactors(number, primeMap));
+  }
   let properFractions = limit - 1;
-  for (let denom = 3; denom <= limit; denom++){
-    const numSet = new Set();
-    for (let prime of primeArr) {
-      if (prime >= denom) break;
-      if (denom % prime === 0) continue;
-      let primeMult = prime;
-      let multiplier = 1;
-      while (primeMult < denom) {
-        // console.log(multiplier);
-        if ((multiplier !== 1 && denom % multiplier === 0)
-            || numSet.has(primeMult)){
-          multiplier++;
-          primeMult = prime * multiplier;
-          continue;
+  for (let denom = 3; denom <= limit; denom++) {
+    if (primeMap.get(denom)) {
+      properFractions += (denom - 2);
+      continue;
+    }
+    const denomPrimeFactors = factorMap.get(denom);
+    for (let num = 2; num < denom; num++) {
+      if (denom % num === 0) continue;
+      const numPrimeFactors = factorMap.get(num);
+      let reducable = false;
+      for (let numPrime of numPrimeFactors){
+        if (denomPrimeFactors.has(numPrime)){
+          reducable = true;
+          break;
         }
-        if (primeMult > denom) break;
-        console.log(primeMult, denom);
-        numSet.add(primeMult);
-        properFractions++;
-        multiplier++;
-        primeMult = prime * multiplier;
       }
+      if (reducable) continue;
+      properFractions++;
     }
   }
-  //   for (let num = 1; num < denom; num++){
-  //     let reducable = false;
-  //     for (let div = 2; div < num; div++){
-  //       if (num % div === 0 && denom % div === 0) {
-  //         reducable = true;
-  //         break;
-  //       }
-  //     }
-  //     if (reducable) continue;
-  //     if (num === 1) properFractions++;
-  //     if (denom % num === 0) continue;
-  //     properFractions++;
-  //     // console.log(num, denom);
-  //   }
-  // }
+
   return properFractions;
 };
 
-console.log(numProperFractions(100));
+console.log(numProperFractions(10000));
