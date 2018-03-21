@@ -11,10 +11,9 @@
 // How many elements would be contained in the set of reduced proper fractions for d ≤ 1, 000, 000 ?
 
 const numProperFractions = limit => {
-  const phi = [];
-  for (let num = 0; num <= limit; num++){
-    phi.push(num);
-  }
+  const phi = (new Array(limit + 1))
+    .fill(0)
+    .map((e, i) => i);
   for (let num = 2; num <= limit; num++){
     if (phi[num] === num){
       for (let mult = num; mult <= limit; mult += num){
