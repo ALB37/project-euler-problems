@@ -10,64 +10,19 @@
 
 // How many elements would be contained in the set of reduced proper fractions for d ≤ 1, 000, 000 ?
 
-const bigInt = require('big-integer');
-
-const primeGen = limit => {
-  const primeMap = new Map();
-  for (let num = 1; num <= limit; num++) {
-    if (bigInt(num).isPrime()) {
-      primeMap.set(num, true);
-    } else {
-      primeMap.set(num, false);
-    }
-  }
-  return primeMap;
-};
-
-const primeFactors = (number, primeMap) => {
-  const factorSet = new Set();
-  if (primeMap.get(number)) {
-    factorSet.add(number);
-    return factorSet;
-  }
-  for (let [prime, bool] of primeMap) {
-    if (!bool) continue;
-    if (number % prime === 0) {
-      factorSet.add(prime);
-    }
-  }
-  return factorSet;
-};
-
 const numProperFractions = limit => {
-  const primeMap = primeGen(limit);
-  const factorMap = new Map();
-  for (let number = 2; number <= limit; number++) {
-    factorMap.set(number, primeFactors(number, primeMap));
+  const phi = [];
+  for (let num = 0; num <= limit; num++){
+    phi.push(num);
   }
-  let properFractions = limit - 1;
-  for (let denom = 3; denom <= limit; denom++) {
-    if (primeMap.get(denom)) {
-      properFractions += (denom - 2);
-      continue;
-    }
-    const denomPrimeFactors = factorMap.get(denom);
-    for (let num = 2; num < denom; num++) {
-      if (denom % num === 0) continue;
-      const numPrimeFactors = factorMap.get(num);
-      let reducable = false;
-      for (let numPrime of numPrimeFactors){
-        if (denomPrimeFactors.has(numPrime)){
-          reducable = true;
-          break;
-        }
+  for (let num = 2; num <= limit; num++){
+    if (phi[num] === num){
+      for (let mult = num; mult <= limit; mult += num){
+        phi[mult] -= Math.floor(phi[mult] / num);
       }
-      if (reducable) continue;
-      properFractions++;
     }
   }
-
-  return properFractions;
+  return phi.reduce((ac, v) => ac + v, 0) - 1;
 };
 
-console.log(numProperFractions(10000));
+console.log(numProperFractions(1000000));
