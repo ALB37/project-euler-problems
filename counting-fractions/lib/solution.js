@@ -15,7 +15,7 @@ const numProperFractions = limit => {
   for (let num = 2; num <= limit; num++){
     if (phi[num] === num){
       for (let mult = num; mult <= limit; mult += num){
-        phi[mult] -= Math.floor(phi[mult] / num);
+        phi[mult] -= phi[mult] / num;
       }
     }
   }
