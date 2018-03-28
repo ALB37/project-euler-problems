@@ -28,7 +28,6 @@ const sumCombinations = sum => {
   for (let i = 0; i < arrayOfPossibleNumbers.length; i++){
     for (let j = arrayOfPossibleNumbers[i]; j <= sum; j++){
       combinations[j] += combinations[j - arrayOfPossibleNumbers[i]];
-      console.log(j, i, combinations[j]);
     }
   }
 
