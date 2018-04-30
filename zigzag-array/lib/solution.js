@@ -12,14 +12,15 @@ module.exports = (() => {
   };
 
   const zigzag = arrayOfInts => {
-    if (!Array.isArray(arrayOfInts)) throw new TypeError('input must be an array of Integers');
+    if (!Array.isArray(arrayOfInts))
+      throw new TypeError('input must be an array of Integers');
     let low = arrayOfInts[0] > arrayOfInts[1];
     let current = 1;
     let next = current + 1;
     while (next < arrayOfInts.length) {
-      if ((low && arrayOfInts[current] > arrayOfInts[next]) || (!low && arrayOfInts[current] < arrayOfInts[next])) {
-        swap(arrayOfInts, current, next);
-      }
+      ((low && arrayOfInts[current] > arrayOfInts[next]) 
+        || (!low && arrayOfInts[current] < arrayOfInts[next]))
+      && swap(arrayOfInts, current, next);
       low = !low;
       current++;
       next++;
