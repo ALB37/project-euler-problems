@@ -5,7 +5,7 @@
 
 module.exports = (() => {
 
-  const mapSubstr = (map, sub, ind) => {
+  const mapSubstr = map => sub => ind => {
     map.get(sub) ?
       map.set(sub, new Set([...map.get(sub), ind])) :
       map.set(sub, new Set([ind]));
@@ -13,11 +13,11 @@ module.exports = (() => {
 
   //for a given string, using data from map, 
   //build up substrings of a given length
-  const addLongerSubstrs = (string, map, len) => {
+  const addLongerSubstrs = string => map => len => {
     map.forEach(val => {
       val.forEach(i => {
         const current = string.substr(i, len);
-        mapSubstr(map, current, i);
+        mapSubstr(map)(current)(i);
       });
     });
   };
@@ -26,7 +26,7 @@ module.exports = (() => {
     map.forEach((val, key) => val.size === 1 && map.delete(key));
   };
 
-  const filterShortSubs = (map, size) => {
+  const filterShortSubs = map => size => {
     map.forEach((val, key) => {
       key.length < size && map.delete(key);
       const setCpy = [...val];
@@ -46,7 +46,7 @@ module.exports = (() => {
 
     //map all the characters in the string, filter out non-repeating chars
     const charMap = new Map();
-    str.split('').forEach((char, i) => mapSubstr(charMap, char, i));
+    str.split('').forEach((char, i) => mapSubstr(charMap)(char)(i));
     filterNonRepeating(charMap);
     if (!charMap.size) return '';
 
@@ -57,8 +57,8 @@ module.exports = (() => {
     //search for matching substrings of increasing length
     //break if limit is hit or no matching substrings of given length
     while (windowSize <= limit){
-      addLongerSubstrs(str, charMap, windowSize);
-      filterShortSubs(charMap, windowSize);
+      addLongerSubstrs(str)(charMap)(windowSize);
+      filterShortSubs(charMap)(windowSize);
       filterNonRepeating(charMap);
 
       if (!charMap.size) break;
